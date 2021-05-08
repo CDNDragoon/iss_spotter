@@ -51,10 +51,33 @@ const fetchISSFlyOverTimes = function(coords, callback) {
       const data = JSON.parse(body);
       // retrieve the response key from the data
       const overhead = data.response;
-      callback(null, data);
+      callback(null, overhead);
       return;
     }
   })
 };
 
-module.exports = { fetchISSFlyOverTimes };
+const nextISSTimesForMyLocation = (callback) => {
+  fetchMyIP((err, ip) => {
+    if (err) {
+      callback(err, null);
+      return;
+    };
+
+    fetchCoordsByIP(ip, (err, coords) => {
+      if (err) {
+        callback(err, null)
+      };
+
+      fetchISSFlyOverTimes(coords, (err, flyoverTimes) => {
+        if (err) {
+        callback(err, null)
+        };
+
+        callback(null, flyoverTimes)
+      });
+    });
+  });
+};
+
+module.exports = { nextISSTimesForMyLocation };
