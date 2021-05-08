@@ -14,4 +14,18 @@ const fetchMyIP = (callback) => {
   });
 };
 
-module.exports = { fetchMyIP };
+const fetchCoordsByIP = (ip, callback) => {
+  request(`https://freegeoip.app/json/${ip}`, (err, res, body) => {
+    if (err) {
+      return callback(`Didn't work boss: ${err}`, null)
+    } else {
+      const data = JSON.parse(body)
+      const lat = data.latitude
+      const lon = data.longitude
+
+      return callback(null, [lat, lon])
+    }
+  })
+}
+
+module.exports = { fetchCoordsByIP };
